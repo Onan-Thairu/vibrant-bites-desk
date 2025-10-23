@@ -1,6 +1,8 @@
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, ChevronRight, Calendar } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
@@ -49,8 +51,23 @@ export default function MealPlanDetails() {
   const { id } = useParams();
   const userRole = window.location.pathname.includes("trainer") ? "trainer" : "employee";
   const [selectedDay, setSelectedDay] = useState(1);
+  const [completedMeals, setCompletedMeals] = useState<Record<string, boolean>>({});
 
   const currentDayData = mockDays.find((d) => d.day === selectedDay) || mockDays[0];
+
+  const toggleMealCompletion = (dayMealKey: string) => {
+    setCompletedMeals((prev) => ({
+      ...prev,
+      [dayMealKey]: !prev[dayMealKey],
+    }));
+  };
+
+  const completedCalories = currentDayData.meals.reduce((sum, meal, index) => {
+    const mealKey = `${selectedDay}-${index}`;
+    return sum + (completedMeals[mealKey] ? meal.calories : 0);
+  }, 0);
+
+  const calorieProgress = (completedCalories / currentDayData.totalCalories) * 100;
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -99,35 +116,70 @@ export default function MealPlanDetails() {
         </section>
 
         {/* Daily Summary */}
-        <div className="bg-card border border-border rounded-lg p-4" style={{ boxShadow: "var(--shadow-card)" }}>
+        <div className="bg-card border border-border rounded-lg p-4 space-y-3" style={{ boxShadow: "var(--shadow-card)" }}>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Total Daily Calories</span>
+            <span className="text-sm font-medium">Daily Calorie Target</span>
             <Badge variant="secondary" className="bg-accent/20 text-accent-foreground">
               {currentDayData.totalCalories} kcal
             </Badge>
           </div>
+          
+          {userRole === "employee" && (
+            <>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Completed</span>
+                  <span className="font-semibold text-primary">
+                    {completedCalories} / {currentDayData.totalCalories} kcal
+                  </span>
+                </div>
+                <Progress value={calorieProgress} className="h-2" />
+              </div>
+            </>
+          )}
         </div>
 
         {/* Meals for Selected Day */}
         <section className="space-y-3">
           <h3 className="font-semibold">Day {currentDayData.day} Meals</h3>
-          {currentDayData.meals.map((meal, index) => (
-            <button
-              key={index}
-              className="w-full bg-card border border-border rounded-lg p-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
-              style={{ boxShadow: "var(--shadow-card)" }}
-              onClick={() => navigate(`/${userRole}/plans/${id}/meal/${selectedDay}-${index}`)}
-            >
-              <div className="text-left flex-1">
-                <h4 className="font-semibold">{meal.name}</h4>
-                <p className="text-sm text-muted-foreground">{meal.time}</p>
+          {currentDayData.meals.map((meal, index) => {
+            const mealKey = `${selectedDay}-${index}`;
+            const isCompleted = completedMeals[mealKey];
+
+            return (
+              <div
+                key={index}
+                className="w-full bg-card border border-border rounded-lg p-4 flex items-center gap-3"
+                style={{ boxShadow: "var(--shadow-card)" }}
+              >
+                {userRole === "employee" && (
+                  <Checkbox
+                    checked={isCompleted}
+                    onCheckedChange={() => toggleMealCompletion(mealKey)}
+                    className="h-5 w-5"
+                  />
+                )}
+                
+                <button
+                  className="flex-1 flex items-center justify-between hover:bg-muted/50 transition-colors rounded-lg -m-4 p-4"
+                  onClick={() => navigate(`/${userRole}/plans/${id}/meal/${selectedDay}-${index}`)}
+                >
+                  <div className="text-left flex-1">
+                    <h4 className={`font-semibold ${isCompleted ? "line-through text-muted-foreground" : ""}`}>
+                      {meal.name}
+                    </h4>
+                    <p className="text-sm text-muted-foreground">{meal.time}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className={`text-sm font-medium ${isCompleted ? "text-muted-foreground" : "text-accent"}`}>
+                      {meal.calories} cal
+                    </span>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                </button>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-accent">{meal.calories} cal</span>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </div>
-            </button>
-          ))}
+            );
+          })}
         </section>
       </main>
 
