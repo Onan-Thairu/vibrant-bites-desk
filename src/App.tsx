@@ -9,6 +9,8 @@ import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
 import MealPlanDetails from "./pages/MealPlanDetails";
 import MealDetails from "./pages/MealDetails";
 import CreateMealPlan from "./pages/CreateMealPlan";
+import EmployeesManagement from "./pages/trainer/EmployeesManagement";
+import InviteEmployee from "./pages/trainer/InviteEmployee";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -29,7 +31,8 @@ const App = () => (
           <Route path="/trainer/plans/create" element={<CreateMealPlan />} />
           <Route path="/trainer/plans/:id" element={<MealPlanDetails />} />
           <Route path="/trainer/plans/:id/meal/:mealId" element={<MealDetails />} />
-          <Route path="/trainer/employees" element={<TrainerDashboard />} />
+          <Route path="/trainer/employees" element={<EmployeesManagement />} />
+          <Route path="/trainer/employees/invite" element={<InviteEmployee />} />
           
           {/* Employee Routes */}
           <Route path="/employee" element={<EmployeeDashboard />} />
