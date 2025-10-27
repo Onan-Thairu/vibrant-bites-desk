@@ -7,7 +7,7 @@ import { ArrowLeft, Search, Plus, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-const mockEmployees = [
+const mockTrainees = [
   {
     id: "1",
     name: "John Doe",
@@ -31,11 +31,11 @@ const mockEmployees = [
   },
 ];
 
-export default function EmployeesManagement() {
+export default function TraineesManagement() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredEmployees = mockEmployees.filter(
+  const filteredTrainees = mockTrainees.filter(
     (emp) =>
       emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       emp.email.toLowerCase().includes(searchQuery.toLowerCase())
@@ -58,12 +58,12 @@ export default function EmployeesManagement() {
               <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h1 className="text-xl font-bold">Employees</h1>
+              <h1 className="text-xl font-bold">Trainees</h1>
             </div>
             <Button
               size="sm"
               className="bg-accent hover:bg-accent/90"
-              onClick={() => navigate("/trainer/employees/invite")}
+              onClick={() => navigate("/trainer/trainees/invite")}
             >
               <Plus className="h-4 w-4 mr-1" />
               Invite
@@ -74,7 +74,7 @@ export default function EmployeesManagement() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search employees..."
+              placeholder="Search trainees..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9"
@@ -85,30 +85,31 @@ export default function EmployeesManagement() {
 
       <main className="max-w-lg mx-auto px-4 py-6">
         <div className="space-y-3">
-          {filteredEmployees.map((employee) => (
+          {filteredTrainees.map((trainee) => (
             <div
-              key={employee.id}
-              className="bg-card border border-border rounded-lg p-4"
+              key={trainee.id}
+              className="bg-card border border-border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors"
               style={{ boxShadow: "var(--shadow-card)" }}
+              onClick={() => navigate(`/trainer/trainees/${trainee.id}/progress`)}
             >
               <div className="flex items-start gap-3">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={employee.avatar} alt={employee.name} />
+                  <AvatarImage src={trainee.avatar} alt={trainee.name} />
                   <AvatarFallback className="bg-primary/10 text-primary">
-                    {getInitials(employee.name)}
+                    {getInitials(trainee.name)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold">{employee.name}</h3>
+                  <h3 className="font-semibold">{trainee.name}</h3>
                   <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
                     <Mail className="h-3 w-3" />
-                    {employee.email}
+                    {trainee.email}
                   </p>
                   <div className="space-y-1">
                     <p className="text-xs text-muted-foreground">Assigned Meal Plans:</p>
                     <div className="flex flex-wrap gap-1">
-                      {employee.mealPlans.length > 0 ? (
-                        employee.mealPlans.map((plan, idx) => (
+                      {trainee.mealPlans.length > 0 ? (
+                        trainee.mealPlans.map((plan, idx) => (
                           <Badge
                             key={idx}
                             variant="secondary"

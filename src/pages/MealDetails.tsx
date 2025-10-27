@@ -36,7 +36,7 @@ const mockMealData = {
 export default function MealDetails() {
   const navigate = useNavigate();
   const { mealId } = useParams();
-  const userRole = window.location.pathname.includes("trainer") ? "trainer" : "employee";
+  const userRole = window.location.pathname.includes("trainer") ? "trainer" : "trainee";
 
   return (
     <div className="min-h-screen bg-background pb-24">

@@ -49,7 +49,7 @@ const mockDays = [
 export default function MealPlanDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const userRole = window.location.pathname.includes("trainer") ? "trainer" : "employee";
+  const userRole = window.location.pathname.includes("trainer") ? "trainer" : "trainee";
   const [selectedDay, setSelectedDay] = useState(1);
   const [completedMeals, setCompletedMeals] = useState<Record<string, boolean>>({});
 
@@ -124,7 +124,7 @@ export default function MealPlanDetails() {
             </Badge>
           </div>
           
-          {userRole === "employee" && (
+          {userRole === "trainee" && (
             <>
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
@@ -152,7 +152,7 @@ export default function MealPlanDetails() {
                 className="w-full bg-card border border-border rounded-lg p-4 flex items-center gap-3"
                 style={{ boxShadow: "var(--shadow-card)" }}
               >
-                {userRole === "employee" && (
+                {userRole === "trainee" && (
                   <Checkbox
                     checked={isCompleted}
                     onCheckedChange={() => toggleMealCompletion(mealKey)}

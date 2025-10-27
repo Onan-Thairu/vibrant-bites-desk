@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function InviteEmployee() {
+export default function InviteTrainee() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -18,7 +18,7 @@ export default function InviteEmployee() {
       return;
     }
     toast.success(`Invitation sent to ${email}`);
-    navigate("/trainer/employees");
+    navigate("/trainer/trainees");
   };
 
   return (
@@ -28,14 +28,14 @@ export default function InviteEmployee() {
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-xl font-bold">Invite Employee</h1>
+          <h1 className="text-xl font-bold">Invite Trainee</h1>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
         <div>
           <p className="text-muted-foreground">
-            Send an invitation to add a new employee to your meal planning program.
+            Send an invitation to add a new trainee to your meal planning program.
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export default function InviteEmployee() {
             <Label htmlFor="name">Full Name</Label>
             <Input
               id="name"
-              placeholder="Enter employee's full name"
+              placeholder="Enter trainee's full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -55,7 +55,7 @@ export default function InviteEmployee() {
             <Input
               id="email"
               type="email"
-              placeholder="employee@company.com"
+              placeholder="trainee@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />

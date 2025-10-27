@@ -1,6 +1,6 @@
 import { BottomNav } from "@/components/BottomNav";
 import { MealPlanCard } from "@/components/MealPlanCard";
-import { Menu } from "lucide-react";
+import { MobileHeader } from "@/components/MobileHeader";
 import { useNavigate } from "react-router-dom";
 import mealPlan1 from "@/assets/meal-plan-1.jpg";
 import mealPlan2 from "@/assets/meal-plan-2.jpg";
@@ -31,18 +31,12 @@ const pastPlans = [
   },
 ];
 
-export default function EmployeeDashboard() {
+export default function TraineeDashboard() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <header className="bg-card border-b border-border sticky top-0 z-40">
-        <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
-          <Menu className="h-6 w-6 text-foreground" />
-          <h1 className="text-xl font-bold">Meal Plans</h1>
-          <div className="w-6" /> {/* Spacer for centering */}
-        </div>
-      </header>
+    <div className="min-h-screen bg-background pb-24 lg:pb-0">
+      <MobileHeader title="Meal Plans" />
 
       <main className="max-w-lg mx-auto px-4 py-6 space-y-8">
         {/* Current Plan Section */}
@@ -50,7 +44,7 @@ export default function EmployeeDashboard() {
           <h2 className="text-lg font-semibold mb-4">Current Plan</h2>
           <MealPlanCard
             {...currentPlan}
-            onClick={() => navigate(`/employee/plans/${currentPlan.id}`)}
+            onClick={() => navigate(`/trainee/plans/${currentPlan.id}`)}
           />
         </section>
 
@@ -62,14 +56,14 @@ export default function EmployeeDashboard() {
               <MealPlanCard
                 key={plan.id}
                 {...plan}
-                onClick={() => navigate(`/employee/plans/${plan.id}`)}
+                onClick={() => navigate(`/trainee/plans/${plan.id}`)}
               />
             ))}
           </div>
         </section>
       </main>
 
-      <BottomNav userRole="employee" />
+      <BottomNav userRole="trainee" />
     </div>
   );
 }

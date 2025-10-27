@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 export default function Settings() {
   const navigate = useNavigate();
-  const userRole = window.location.pathname.includes("trainer") ? "trainer" : "employee";
+  const userRole = window.location.pathname.includes("trainer") ? "trainer" : "trainee";
 
   const handleSave = () => {
     toast.success("Settings saved successfully!");

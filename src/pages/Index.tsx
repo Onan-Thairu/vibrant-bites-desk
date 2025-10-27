@@ -28,9 +28,9 @@ export default function Index() {
             <Button
               size="lg"
               className="bg-accent hover:bg-accent/90 text-accent-foreground"
-              onClick={() => navigate("/employee")}
+              onClick={() => navigate("/trainee")}
             >
-              Employee Login
+              Trainee Login
             </Button>
             <Button
               size="lg"
@@ -56,7 +56,7 @@ export default function Index() {
             </div>
             <h3 className="text-xl font-semibold mb-2">Custom Meal Plans</h3>
             <p className="text-muted-foreground">
-              Trainers create personalized nutrition plans tailored to each employee's goals
+              Trainers create personalized nutrition plans tailored to each trainee's goals
             </p>
           </Card>
 
@@ -66,7 +66,7 @@ export default function Index() {
             </div>
             <h3 className="text-xl font-semibold mb-2">Easy Management</h3>
             <p className="text-muted-foreground">
-              Track employee progress and adjust plans as needed with intuitive dashboards
+              Track trainee progress and adjust plans as needed with intuitive dashboards
             </p>
           </Card>
 
@@ -90,9 +90,9 @@ export default function Index() {
           </h2>
           <div className="space-y-6">
             {[
-              "Complement employee workouts with structured nutrition guidance",
+              "Complement trainee workouts with structured nutrition guidance",
               "Reduce time spent on manual meal planning and communication",
-              "Improve employee wellness and productivity",
+              "Improve trainee wellness and productivity",
               "Access plans anytime, anywhere with our Progressive Web App",
             ].map((benefit, index) => (
               <div key={index} className="flex items-start gap-4">
@@ -114,7 +114,7 @@ export default function Index() {
           <Button
             size="lg"
             className="bg-accent hover:bg-accent/90"
-            onClick={() => navigate("/employee")}
+            onClick={() => navigate("/trainee")}
           >
             Get Started Today
           </Button>
