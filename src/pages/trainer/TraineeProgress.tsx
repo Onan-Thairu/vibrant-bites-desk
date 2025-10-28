@@ -30,14 +30,9 @@ const mockMealPlans = [
 const mockProgress = {
   currentStreak: 5,
   totalMealsCompleted: 42,
-  weeklyCompletion: 85,
-  mealPlanProgress: 60,
-  recentActivity: [
-    { date: "Today", meals: 3, calories: 1850, target: 2000 },
-    { date: "Yesterday", meals: 3, calories: 2100, target: 2000 },
-    { date: "2 days ago", meals: 2, calories: 1600, target: 2000 },
-    { date: "3 days ago", meals: 3, calories: 1950, target: 2000 },
-  ],
+  completionPercentage: 85,
+  completedMeals: 12,
+  totalMeals: 90,
 };
 
 export default function TraineeProgress() {
@@ -133,12 +128,12 @@ export default function TraineeProgress() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              Weekly Completion
-              <Badge variant="secondary">{mockProgress.weeklyCompletion}%</Badge>
+              Completion Percentage
+              <Badge variant="secondary">{mockProgress.completionPercentage}%</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Progress value={mockProgress.weeklyCompletion} className="h-3" />
+            <Progress value={mockProgress.completionPercentage} className="h-3" />
           </CardContent>
         </Card>
 
@@ -146,36 +141,14 @@ export default function TraineeProgress() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               Meal Plan Progress
-              <Badge variant="secondary">{mockProgress.mealPlanProgress}%</Badge>
+              <Badge variant="secondary">{mockProgress.completedMeals}/{mockProgress.totalMeals} meals</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Progress value={mockProgress.mealPlanProgress} className="h-3" />
+            <Progress value={(mockProgress.completedMeals / mockProgress.totalMeals) * 100} className="h-3" />
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {mockProgress.recentActivity.map((day, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{day.date}</span>
-                  <span className="text-sm text-muted-foreground">
-                    {day.meals} meals • {day.calories} / {day.target} cal
-                  </span>
-                </div>
-                <Progress 
-                  value={(day.calories / day.target) * 100} 
-                  className="h-2" 
-                />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
       </main>
     </div>
   );

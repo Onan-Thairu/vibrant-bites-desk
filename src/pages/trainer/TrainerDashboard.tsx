@@ -75,7 +75,7 @@ export default function TrainerDashboard() {
               <h2 className="text-lg font-semibold mb-4">Overview</h2>
               <div className="grid grid-cols-3 gap-4">
                 <StatCard label="Total Plans" value={24} icon={FileText} />
-                <StatCard label="Active Employees" value={150} icon={Users} />
+                <StatCard label="Active Trainees" value={150} icon={Users} />
                 <StatCard label="Engagement" value="85%" icon={TrendingUp} />
               </div>
             </section>

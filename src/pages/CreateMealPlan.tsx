@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, ChevronRight, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,12 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { BottomNav } from "@/components/BottomNav";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const mockTrainees = [
   { id: "1", name: "John Doe", email: "john@company.com" },
@@ -24,18 +28,13 @@ export default function CreateMealPlan() {
   const navigate = useNavigate();
   const [planName, setPlanName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [numberOfWeeks, setNumberOfWeeks] = useState<string>("1");
   const [selectedTrainees, setSelectedTrainees] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [mealDays, setMealDays] = useState<Record<string, any>>({});
 
   const handleCreate = () => {
     if (!planName.trim()) {
       toast.error("Please enter a plan name");
-      return;
-    }
-    if (selectedDates.length === 0) {
-      toast.error("Please select at least one day");
       return;
     }
     if (selectedTrainees.length === 0) {
@@ -54,37 +53,6 @@ export default function CreateMealPlan() {
     );
   };
 
-  const handleDateSelect = (dates: Date[] | undefined) => {
-    if (dates) {
-      setSelectedDates(dates);
-      // Initialize meal days for new dates
-      const newMealDays = { ...mealDays };
-      dates.forEach(date => {
-        const dateKey = format(date, "yyyy-MM-dd");
-        if (!newMealDays[dateKey]) {
-          newMealDays[dateKey] = {
-            breakfast: { name: "", calories: 0, protein: 0, carbs: 0, fats: 0 },
-            lunch: { name: "", calories: 0, protein: 0, carbs: 0, fats: 0 },
-            dinner: { name: "", calories: 0, protein: 0, carbs: 0, fats: 0 },
-          };
-        }
-      });
-      setMealDays(newMealDays);
-    }
-  };
-
-  const updateMeal = (dateKey: string, mealType: string, field: string, value: any) => {
-    setMealDays(prev => ({
-      ...prev,
-      [dateKey]: {
-        ...prev[dateKey],
-        [mealType]: {
-          ...prev[dateKey][mealType],
-          [field]: value
-        }
-      }
-    }));
-  };
 
   const filteredTrainees = mockTrainees.filter(
     (trainee) =>
@@ -118,26 +86,28 @@ export default function CreateMealPlan() {
           </div>
 
           <div className="space-y-2">
-            <Label>Select Days</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDates.length > 0 
-                    ? `${selectedDates.length} day(s) selected`
-                    : "Choose meal plan days"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="multiple"
-                  selected={selectedDates}
-                  onSelect={handleDateSelect}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <Label>Number of Weeks</Label>
+            <Select value={numberOfWeeks} onValueChange={setNumberOfWeeks}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select number of weeks" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1 Week</SelectItem>
+                <SelectItem value="2">2 Weeks</SelectItem>
+                <SelectItem value="3">3 Weeks</SelectItem>
+                <SelectItem value="4">4 Weeks</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+
+          {parseInt(numberOfWeeks) > 1 && (
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                Week 1 meals will be duplicated to weeks {Array.from({length: parseInt(numberOfWeeks) - 1}, (_, i) => i + 2).join(", ")}
+              </AlertDescription>
+            </Alert>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
@@ -151,81 +121,29 @@ export default function CreateMealPlan() {
           </div>
         </section>
 
-        {/* Meal Plan Days Configuration */}
-        {selectedDates.length > 0 && (
-          <section className="space-y-4">
-            <h2 className="text-lg font-semibold">Configure Meals</h2>
-            <div className="space-y-6">
-              {selectedDates.sort((a, b) => a.getTime() - b.getTime()).map((date, index) => {
-                const dateKey = format(date, "yyyy-MM-dd");
-                const dayMeals = mealDays[dateKey] || {};
-                
-                return (
-                  <Card key={dateKey}>
-                    <CardHeader>
-                      <CardTitle className="text-base">
-                        Day {index + 1} - {format(date, "EEEE, MMM d")}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {["breakfast", "lunch", "dinner"].map((mealType) => (
-                        <div key={mealType} className="space-y-2 pb-4 border-b last:border-0 last:pb-0">
-                          <h4 className="font-medium capitalize">{mealType}</h4>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="col-span-2">
-                              <Label className="text-xs">Meal Name</Label>
-                              <Input
-                                placeholder={`${mealType} name`}
-                                value={dayMeals[mealType]?.name || ""}
-                                onChange={(e) => updateMeal(dateKey, mealType, "name", e.target.value)}
-                              />
-                            </div>
-                            <div>
-                              <Label className="text-xs">Calories</Label>
-                              <Input
-                                type="number"
-                                placeholder="0"
-                                value={dayMeals[mealType]?.calories || ""}
-                                onChange={(e) => updateMeal(dateKey, mealType, "calories", parseInt(e.target.value) || 0)}
-                              />
-                            </div>
-                            <div>
-                              <Label className="text-xs">Protein (g)</Label>
-                              <Input
-                                type="number"
-                                placeholder="0"
-                                value={dayMeals[mealType]?.protein || ""}
-                                onChange={(e) => updateMeal(dateKey, mealType, "protein", parseInt(e.target.value) || 0)}
-                              />
-                            </div>
-                            <div>
-                              <Label className="text-xs">Carbs (g)</Label>
-                              <Input
-                                type="number"
-                                placeholder="0"
-                                value={dayMeals[mealType]?.carbs || ""}
-                                onChange={(e) => updateMeal(dateKey, mealType, "carbs", parseInt(e.target.value) || 0)}
-                              />
-                            </div>
-                            <div>
-                              <Label className="text-xs">Fats (g)</Label>
-                              <Input
-                                type="number"
-                                placeholder="0"
-                                value={dayMeals[mealType]?.fats || ""}
-                                onChange={(e) => updateMeal(dateKey, mealType, "fats", parseInt(e.target.value) || 0)}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </section>
-        )}
+        {/* Meal Plan Days */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold">Configure Week 1 Meals</h2>
+          <div className="space-y-3">
+            {Array.from({ length: 7 }, (_, i) => i + 1).map((day) => (
+              <Card
+                key={day}
+                className="cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => navigate(`/trainer/plans/create/day/${day}`)}
+              >
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Day {day}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Configure meals for this day
+                    </p>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
 
         {/* Assign to Trainees */}
         <section className="space-y-4">
@@ -241,27 +159,45 @@ export default function CreateMealPlan() {
             />
           </div>
 
-          <div className="space-y-3 max-h-64 overflow-y-auto">
-            {filteredTrainees.map((trainee) => (
-              <div
-                key={trainee.id}
-                className="flex items-center gap-3 p-3 border border-border rounded-lg"
-              >
-                <Checkbox
-                  id={`trainee-${trainee.id}`}
-                  checked={selectedTrainees.includes(trainee.id)}
-                  onCheckedChange={() => toggleTrainee(trainee.id)}
-                />
-                <Label
-                  htmlFor={`trainee-${trainee.id}`}
-                  className="flex-1 cursor-pointer"
+          {searchQuery && (
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {filteredTrainees.map((trainee) => (
+                <div
+                  key={trainee.id}
+                  className="flex items-center gap-3 p-3 border border-border rounded-lg"
                 >
-                  <div className="font-medium">{trainee.name}</div>
-                  <div className="text-sm text-muted-foreground">{trainee.email}</div>
-                </Label>
+                  <Checkbox
+                    id={`trainee-${trainee.id}`}
+                    checked={selectedTrainees.includes(trainee.id)}
+                    onCheckedChange={() => toggleTrainee(trainee.id)}
+                  />
+                  <Label
+                    htmlFor={`trainee-${trainee.id}`}
+                    className="flex-1 cursor-pointer"
+                  >
+                    <div className="font-medium">{trainee.name}</div>
+                    <div className="text-sm text-muted-foreground">{trainee.email}</div>
+                  </Label>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {selectedTrainees.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Selected Trainees:</Label>
+              <div className="flex flex-wrap gap-2">
+                {selectedTrainees.map((id) => {
+                  const trainee = mockTrainees.find((t) => t.id === id);
+                  return trainee ? (
+                    <div key={id} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                      {trainee.name}
+                    </div>
+                  ) : null;
+                })}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </section>
 
         {/* Create Button */}

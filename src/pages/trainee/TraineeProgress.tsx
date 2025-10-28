@@ -55,13 +55,13 @@ export default function TraineeProgress() {
           </Card>
         </div>
 
-        {/* Weekly Completion */}
+        {/* Completion Percentage */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
-                Weekly Completion
+                Completion Percentage
               </span>
               <Badge variant="secondary">{progressStats.weeklyCompletion}%</Badge>
             </CardTitle>
@@ -92,28 +92,6 @@ export default function TraineeProgress() {
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentActivity.map((day, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{day.date}</span>
-                  <span className="text-sm text-muted-foreground">
-                    {day.meals} meals • {day.calories} / {day.target} cal
-                  </span>
-                </div>
-                <Progress 
-                  value={(day.calories / day.target) * 100} 
-                  className="h-2" 
-                />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
       </main>
 
       <BottomNav userRole="trainee" />

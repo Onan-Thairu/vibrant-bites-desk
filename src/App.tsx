@@ -13,6 +13,7 @@ import TrainerTraineeProgress from "./pages/trainer/TraineeProgress";
 import MealPlanDetails from "./pages/MealPlanDetails";
 import MealDetails from "./pages/MealDetails";
 import CreateMealPlan from "./pages/CreateMealPlan";
+import ConfigureDayMeals from "./pages/trainer/ConfigureDayMeals";
 import TraineesManagement from "./pages/trainer/TraineesManagement";
 import InviteTrainee from "./pages/trainer/InviteTrainee";
 import Settings from "./pages/Settings";
@@ -41,7 +42,8 @@ const App = () => {
                     {/* Trainer Routes */}
                     <Route path="/trainer" element={<TrainerDashboard />} />
                     <Route path="/trainer/plans" element={<TrainerDashboard />} />
-                    <Route path="/trainer/plans/create" element={<CreateMealPlan />} />
+              <Route path="/trainer/plans/create" element={<CreateMealPlan />} />
+              <Route path="/trainer/plans/create/day/:dayNumber" element={<ConfigureDayMeals />} />
                     <Route path="/trainer/plans/:id" element={<MealPlanDetails />} />
                     <Route path="/trainer/plans/:id/meal/:mealId" element={<MealDetails />} />
                     <Route path="/trainer/trainees" element={<TraineesManagement />} />
