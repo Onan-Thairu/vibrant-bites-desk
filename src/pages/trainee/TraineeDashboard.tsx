@@ -1,10 +1,11 @@
 import { BottomNav } from "@/components/BottomNav";
 import { MealPlanCard } from "@/components/MealPlanCard";
-import { MobileHeader } from "@/components/MobileHeader";
+import { StatCard } from "@/components/StatCard";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
+import { Utensils, TrendingUp, Calendar } from "lucide-react";
 import mealPlan1 from "@/assets/meal-plan-1.jpg";
-import mealPlan2 from "@/assets/meal-plan-2.jpg";
-import mealPlan3 from "@/assets/meal-plan-3.jpg";
 
 const currentPlan = {
   id: "1",
@@ -14,52 +15,60 @@ const currentPlan = {
   image: mealPlan1,
 };
 
-const pastPlans = [
-  {
-    id: "2",
-    title: "30-Day Fitness Challenge",
-    status: "completed" as const,
-    date: "Completed June 30th",
-    image: mealPlan2,
-  },
-  {
-    id: "3",
-    title: "Quick Start Diet",
-    status: "completed" as const,
-    date: "Completed May 15th",
-    image: mealPlan3,
-  },
-];
-
 export default function TraineeDashboard() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background pb-24 lg:pb-0">
-      <MobileHeader title="Meal Plans" />
+      <header className="bg-card border-b border-border sticky top-0 z-40">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+        </div>
+      </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-8">
+      <main className="max-w-4xl mx-auto px-4 py-6 space-y-8">
+        {/* Progress Stats */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatCard
+            label="Meals Completed"
+            value="12/21"
+            icon={Utensils}
+          />
+          <StatCard
+            label="Current Streak"
+            value="5 days"
+            icon={TrendingUp}
+          />
+          <StatCard
+            label="Plan Duration"
+            value="7 days"
+            icon={Calendar}
+          />
+        </section>
+
+        {/* Completion Progress */}
+        <section>
+          <Card className="p-6 border-none" style={{ boxShadow: "var(--shadow-card)" }}>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-lg">Overall Progress</h3>
+                <span className="text-2xl font-bold text-primary">57%</span>
+              </div>
+              <Progress value={57} className="h-3" />
+              <p className="text-sm text-muted-foreground">
+                Keep up the great work! You're more than halfway through your plan.
+              </p>
+            </div>
+          </Card>
+        </section>
+
         {/* Current Plan Section */}
         <section>
-          <h2 className="text-lg font-semibold mb-4">Current Plan</h2>
+          <h2 className="text-xl font-semibold mb-4">Current Meal Plan</h2>
           <MealPlanCard
             {...currentPlan}
             onClick={() => navigate(`/trainee/plans/${currentPlan.id}`)}
           />
-        </section>
-
-        {/* Past Plans Section */}
-        <section>
-          <h2 className="text-lg font-semibold mb-4">Past Plans</h2>
-          <div className="space-y-4">
-            {pastPlans.map((plan) => (
-              <MealPlanCard
-                key={plan.id}
-                {...plan}
-                onClick={() => navigate(`/trainee/plans/${plan.id}`)}
-              />
-            ))}
-          </div>
         </section>
       </main>
 
