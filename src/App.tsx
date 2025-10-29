@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import Index from "./pages/Index";
 import TrainerDashboard from "./pages/trainer/TrainerDashboard";
+import TrainerMealPlans from "./pages/trainer/TrainerMealPlans";
 import TraineeDashboard from "./pages/trainee/TraineeDashboard";
 import TraineeProgress from "./pages/trainee/TraineeProgress";
 import TrainerTraineeProgress from "./pages/trainer/TraineeProgress";
@@ -41,7 +42,7 @@ const App = () => {
                   <Routes>
                     {/* Trainer Routes */}
                     <Route path="/trainer" element={<TrainerDashboard />} />
-                    <Route path="/trainer/plans" element={<TrainerDashboard />} />
+                    <Route path="/trainer/plans" element={<TrainerMealPlans />} />
               <Route path="/trainer/plans/create" element={<CreateMealPlan />} />
               <Route path="/trainer/plans/create/day/:dayNumber" element={<ConfigureDayMeals />} />
                     <Route path="/trainer/plans/:id" element={<MealPlanDetails />} />
