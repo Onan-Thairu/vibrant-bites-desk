@@ -17,7 +17,8 @@ const mealTypes = [
 ];
 
 interface MealData {
-  image: string;
+  image: File | null;
+  imagePreview: string;
   description: string;
   calories: number;
   protein: number;
@@ -30,11 +31,11 @@ export default function ConfigureDayMeals() {
   const navigate = useNavigate();
   const { dayNumber } = useParams();
   const [meals, setMeals] = useState<Record<string, MealData>>({
-    breakfast: { image: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
-    snack1: { image: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
-    lunch: { image: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
-    snack2: { image: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
-    dinner: { image: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
+    breakfast: { image: null, imagePreview: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
+    snack1: { image: null, imagePreview: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
+    lunch: { image: null, imagePreview: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
+    snack2: { image: null, imagePreview: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
+    dinner: { image: null, imagePreview: "", description: "", calories: 0, protein: 0, carbs: 0, fats: 0, ingredients: "" },
   });
 
   const updateMeal = (mealId: string, field: keyof MealData, value: any) => {
@@ -45,6 +46,18 @@ export default function ConfigureDayMeals() {
         [field]: value
       }
     }));
+  };
+
+  const handleImageChange = (mealId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      updateMeal(mealId, "image", file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateMeal(mealId, "imagePreview", reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSave = () => {
@@ -75,12 +88,21 @@ export default function ConfigureDayMeals() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-xs">Image URL</Label>
+                <Label className="text-xs">Upload Image</Label>
                 <Input
-                  placeholder="https://example.com/image.jpg"
-                  value={meals[mealType.id].image}
-                  onChange={(e) => updateMeal(mealType.id, "image", e.target.value)}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageChange(mealType.id, e)}
                 />
+                {meals[mealType.id].imagePreview && (
+                  <div className="mt-2">
+                    <img
+                      src={meals[mealType.id].imagePreview}
+                      alt={`${mealType.name} preview`}
+                      className="w-full h-32 object-cover rounded-md"
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">

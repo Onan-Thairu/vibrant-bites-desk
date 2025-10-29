@@ -27,10 +27,24 @@ const mockTrainees = [
 export default function CreateMealPlan() {
   const navigate = useNavigate();
   const [planName, setPlanName] = useState("");
+  const [planImage, setPlanImage] = useState<File | null>(null);
+  const [planImagePreview, setPlanImagePreview] = useState<string>("");
   const [description, setDescription] = useState("");
   const [numberOfWeeks, setNumberOfWeeks] = useState<string>("1");
   const [selectedTrainees, setSelectedTrainees] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPlanImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPlanImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleCreate = () => {
     if (!planName.trim()) {
@@ -83,6 +97,25 @@ export default function CreateMealPlan() {
               value={planName}
               onChange={(e) => setPlanName(e.target.value)}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="planImage">Meal Plan Image</Label>
+            <Input
+              id="planImage"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {planImagePreview && (
+              <div className="mt-2">
+                <img
+                  src={planImagePreview}
+                  alt="Meal plan preview"
+                  className="w-full h-48 object-cover rounded-md"
+                />
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

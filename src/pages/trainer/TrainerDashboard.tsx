@@ -1,145 +1,94 @@
 import { BottomNav } from "@/components/BottomNav";
-import { StatCard } from "@/components/StatCard";
-import { MealPlanCard } from "@/components/MealPlanCard";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, FileText, Users, TrendingUp, Search, Trash2 } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
-import mealPlan1 from "@/assets/meal-plan-1.jpg";
-import mealPlan2 from "@/assets/meal-plan-2.jpg";
-import mealPlan3 from "@/assets/meal-plan-3.jpg";
-import { toast } from "sonner";
-
-const mockMealPlans = [
-  {
-    id: "1",
-    title: "High-Protein Diet",
-    date: "Created: 2024-01-15",
-    image: mealPlan1,
-  },
-  {
-    id: "2",
-    title: "Vegan Meal Plan",
-    date: "Created: 2023-12-20",
-    image: mealPlan2,
-  },
-  {
-    id: "3",
-    title: "Low-Carb Diet",
-    date: "Created: 2023-11-05",
-    image: mealPlan3,
-  },
-];
+import { Card } from "@/components/ui/card";
+import { Utensils, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function TrainerDashboard() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const currentView = location.pathname.includes("/employees") ? "employees" : "plans";
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleDeletePlan = (planId: string) => {
-    toast.success("Meal plan deleted successfully");
-  };
-
-  const filteredMealPlans = mockMealPlans.filter((plan) =>
-    plan.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 lg:pb-0">
       <header className="bg-card border-b border-border sticky top-0 z-40">
-        <div className="max-w-lg mx-auto px-4 py-4">
-          <h1 className="text-xl font-bold mb-4">
-            {currentView === "plans" ? "Meal Plans" : "Employees"}
-          </h1>
-          
-          {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={`Search ${currentView}...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
-            />
-          </div>
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <h1 className="text-2xl font-bold">Dashboard</h1>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-8">
-        {currentView === "plans" ? (
-          <>
-            {/* Overview Section */}
-            <section>
-              <h2 className="text-lg font-semibold mb-4">Overview</h2>
-              <div className="grid grid-cols-3 gap-4">
-                <StatCard label="Total Plans" value={24} icon={FileText} />
-                <StatCard label="Active Trainees" value={150} icon={Users} />
-                <StatCard label="Engagement" value="85%" icon={TrendingUp} />
+      <main className="max-w-4xl mx-auto px-4 py-6 space-y-8">
+        {/* Quick Actions */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card 
+            className="p-6 cursor-pointer hover:bg-muted/50 transition-colors"
+            onClick={() => navigate("/trainer/plans/create")}
+          >
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Utensils className="h-6 w-6 text-primary" />
               </div>
-            </section>
+              <div>
+                <h3 className="font-semibold">Create New Meal Plan</h3>
+                <p className="text-sm text-muted-foreground">Design a custom nutrition plan</p>
+              </div>
+            </div>
+          </Card>
 
-            {/* My Meal Plans Section */}
-            <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">My Meal Plans</h2>
-                <Button
-                  size="sm"
-                  className="bg-accent hover:bg-accent/90"
-                  onClick={() => navigate("/trainer/plans/create")}
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Create
-                </Button>
+          <Card 
+            className="p-6 cursor-pointer hover:bg-muted/50 transition-colors"
+            onClick={() => navigate("/trainer/invite")}
+          >
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
+                <Users className="h-6 w-6 text-accent" />
               </div>
-              
-              {/* Horizontal Scrolling Meal Cards */}
-              <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
-                {filteredMealPlans.map((plan) => (
-                  <div key={plan.id} className="flex-shrink-0 w-72 relative group">
-                    <MealPlanCard
-                      {...plan}
-                      variant="default"
-                      onClick={() => navigate(`/trainer/plans/${plan.id}`)}
-                    />
-                    <Button
-                      size="icon"
-                      variant="destructive"
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeletePlan(plan.id);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+              <div>
+                <h3 className="font-semibold">Invite Trainee</h3>
+                <p className="text-sm text-muted-foreground">Add a new team member</p>
               </div>
-            </section>
-          </>
-        ) : (
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">All Employees</h2>
-              <Button
-                size="sm"
-                className="bg-accent hover:bg-accent/90"
-                onClick={() => navigate("/trainer/employees/invite")}
+            </div>
+          </Card>
+        </section>
+
+        {/* Recent Trainees Section */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Recent Trainees</h2>
+            <Button variant="outline" onClick={() => navigate("/trainer/trainees")}>
+              View All
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { id: "1", name: "John Doe", plan: "Weight Loss Plan", completion: 85 },
+              { id: "2", name: "Jane Smith", plan: "Muscle Gain Plan", completion: 72 },
+              { id: "3", name: "Bob Johnson", plan: "Maintenance Plan", completion: 90 },
+            ].map((trainee) => (
+              <Card
+                key={trainee.id}
+                className="p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => navigate(`/trainer/trainees/${trainee.id}/progress`)}
               >
-                <Plus className="h-4 w-4 mr-1" />
-                Invite
-              </Button>
-            </div>
-            <div className="space-y-3">
-              {/* Employee list will be rendered here */}
-              <p className="text-muted-foreground text-center py-8">
-                Employee management coming soon
-              </p>
-            </div>
-          </section>
-        )}
+                <div className="space-y-2">
+                  <h3 className="font-semibold">{trainee.name}</h3>
+                  <p className="text-sm text-muted-foreground">{trainee.plan}</p>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-sm">
+                      <span>Progress</span>
+                      <span>{trainee.completion}%</span>
+                    </div>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-primary"
+                        style={{ width: `${trainee.completion}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
       </main>
 
       <BottomNav userRole="trainer" />
