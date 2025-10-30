@@ -104,23 +104,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 text-center">
-        <div className="max-w-2xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            Join workplace wellness teams already using MealTer
-          </p>
-          <Button
-            size="lg"
-            className="bg-accent hover:bg-accent/90"
-            onClick={() => navigate("/trainee")}
-          >
-            Get Started Today
-          </Button>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="border-t border-border py-8">
         <div className="max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
