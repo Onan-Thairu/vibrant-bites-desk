@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import TrainerDashboard from "./pages/trainer/TrainerDashboard";
 import TrainerMealPlans from "./pages/trainer/TrainerMealPlans";
 import TraineeDashboard from "./pages/trainee/TraineeDashboard";
+import TraineePlans from "./pages/trainee/TraineePlans";
 import TraineeProgress from "./pages/trainee/TraineeProgress";
 import TrainerTraineeProgress from "./pages/trainer/TraineeProgress";
 import MealPlanDetails from "./pages/MealPlanDetails";
@@ -53,7 +54,7 @@ const App = () => {
                     
                     {/* Trainee Routes */}
                     <Route path="/trainee" element={<TraineeDashboard />} />
-                    <Route path="/trainee/plans" element={<TraineeDashboard />} />
+                    <Route path="/trainee/plans" element={<TraineePlans />} />
                     <Route path="/trainee/plans/:id" element={<MealPlanDetails />} />
                     <Route path="/trainee/plans/:id/meal/:mealId" element={<MealDetails />} />
                     <Route path="/trainee/progress" element={<TraineeProgress />} />
