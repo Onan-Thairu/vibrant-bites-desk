@@ -28,7 +28,7 @@ export default function Index() {
             <Button
               size="lg"
               className="bg-accent hover:bg-accent/90 text-accent-foreground"
-              onClick={() => navigate("/trainee")}
+              onClick={() => navigate("/auth?role=trainee")}
             >
               Trainee Login
             </Button>
@@ -36,7 +36,7 @@ export default function Index() {
               size="lg"
               variant="outline"
               className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20"
-              onClick={() => navigate("/trainer")}
+              onClick={() => navigate("/auth?role=trainer")}
             >
               Trainer Login
             </Button>

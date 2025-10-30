@@ -6,8 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import TrainerDashboard from "./pages/trainer/TrainerDashboard";
 import TrainerMealPlans from "./pages/trainer/TrainerMealPlans";
+import EditMealPlan from "./pages/trainer/EditMealPlan";
+import AssignMealPlan from "./pages/trainer/AssignMealPlan";
 import TraineeDashboard from "./pages/trainee/TraineeDashboard";
 import TraineePlans from "./pages/trainee/TraineePlans";
 import TraineeProgress from "./pages/trainee/TraineeProgress";
@@ -47,6 +50,8 @@ const App = () => {
               <Route path="/trainer/plans/create" element={<CreateMealPlan />} />
               <Route path="/trainer/plans/create/day/:dayNumber" element={<ConfigureDayMeals />} />
                     <Route path="/trainer/plans/:id" element={<MealPlanDetails />} />
+                    <Route path="/trainer/plans/:id/edit" element={<EditMealPlan />} />
+                    <Route path="/trainer/plans/:id/assign" element={<AssignMealPlan />} />
                     <Route path="/trainer/plans/:id/meal/:mealId" element={<MealDetails />} />
                     <Route path="/trainer/trainees" element={<TraineesManagement />} />
                     <Route path="/trainer/trainees/invite" element={<InviteTrainee />} />
@@ -68,6 +73,7 @@ const App = () => {
           ) : (
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           )}

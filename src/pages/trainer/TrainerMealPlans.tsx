@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MealPlanCard } from "@/components/MealPlanCard";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Edit, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
@@ -76,17 +76,38 @@ export default function TrainerMealPlans() {
                       {...plan}
                       onClick={() => navigate(`/trainer/plans/${plan.id}`)}
                     />
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteClick(plan.id);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/trainer/plans/${plan.id}/assign`);
+                        }}
+                      >
+                        <UserPlus className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/trainer/plans/${plan.id}/edit`);
+                        }}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(plan.id);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </CarouselItem>
               ))}
