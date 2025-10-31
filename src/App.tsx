@@ -22,6 +22,7 @@ import ConfigureDayMeals from "./pages/trainer/ConfigureDayMeals";
 import TraineesManagement from "./pages/trainer/TraineesManagement";
 import InviteTrainee from "./pages/trainer/InviteTrainee";
 import Settings from "./pages/Settings";
+import ChangePassword from "./pages/ChangePassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -74,6 +75,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/change-password" element={<ChangePassword />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           )}

@@ -9,7 +9,7 @@ const currentPlan = {
   id: "1",
   title: "Summer Shred 2024",
   status: "active" as const,
-  date: "Started July 1st",
+  traineeCount: 1,
   image: mealPlan1,
 };
 
@@ -17,15 +17,13 @@ const pastPlans = [
   {
     id: "2",
     title: "30-Day Fitness Challenge",
-    status: "completed" as const,
-    date: "Completed June 30th",
+    traineeCount: 1,
     image: mealPlan2,
   },
   {
     id: "3",
     title: "Quick Start Diet",
-    status: "completed" as const,
-    date: "Completed May 15th",
+    traineeCount: 1,
     image: mealPlan3,
   },
 ];

@@ -89,12 +89,12 @@ export default function Settings() {
             <h2 className="font-semibold">Security</h2>
           </div>
           
-          <Button variant="outline" className="w-full justify-start">
+          <Button 
+            variant="outline" 
+            className="w-full justify-start"
+            onClick={() => navigate("/change-password")}
+          >
             Change Password
-          </Button>
-          
-          <Button variant="outline" className="w-full justify-start">
-            Two-Factor Authentication
           </Button>
         </Card>
 

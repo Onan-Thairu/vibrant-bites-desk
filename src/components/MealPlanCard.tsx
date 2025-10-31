@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 interface MealPlanCardProps {
   id: string;
   title: string;
-  status?: "active" | "completed";
-  date: string;
+  status?: "active";
+  traineeCount?: number;
   image: string;
   onClick?: () => void;
   variant?: "default" | "compact";
@@ -16,7 +16,7 @@ interface MealPlanCardProps {
 export function MealPlanCard({
   title,
   status,
-  date,
+  traineeCount = 0,
   image,
   onClick,
   variant = "default",
@@ -39,20 +39,21 @@ export function MealPlanCard({
             />
           </div>
           <div className="p-4 space-y-3">
-            {status && (
-              <Badge
-                variant={status === "active" ? "default" : "secondary"}
-                className={cn(
-                  "text-xs",
-                  status === "active" && "bg-accent hover:bg-accent/90"
-                )}
-              >
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </Badge>
-            )}
+            <div className="flex items-center justify-between">
+              {status && (
+                <Badge
+                  variant="default"
+                  className="text-xs bg-accent hover:bg-accent/90"
+                >
+                  Active
+                </Badge>
+              )}
+              <span className="text-sm text-muted-foreground">
+                {traineeCount} {traineeCount === 1 ? 'trainee' : 'trainees'}
+              </span>
+            </div>
             <div>
               <h3 className="font-semibold text-lg mb-1">{title}</h3>
-              <p className="text-sm text-muted-foreground">{date}</p>
             </div>
             <Button onClick={onClick} variant="outline" className="w-full">
               View
@@ -63,7 +64,9 @@ export function MealPlanCard({
         <>
           <div className="flex-1 space-y-1">
             <h3 className="font-semibold">{title}</h3>
-            <p className="text-sm text-muted-foreground">{date}</p>
+            <p className="text-sm text-muted-foreground">
+              {traineeCount} {traineeCount === 1 ? 'trainee' : 'trainees'}
+            </p>
           </div>
           <div 
             className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0"
