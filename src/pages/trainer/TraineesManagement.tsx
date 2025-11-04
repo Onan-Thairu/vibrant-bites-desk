@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Search, Plus, Mail } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft, Search, Plus, Mail, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const mockTrainees = [
   {
@@ -14,6 +16,8 @@ const mockTrainees = [
     email: "john@company.com",
     avatar: "",
     mealPlans: ["High-Protein Diet", "Muscle Gain Plan"],
+    inviteAccepted: true,
+    inviteSentDate: new Date("2025-01-15"),
   },
   {
     id: "2",
@@ -21,6 +25,8 @@ const mockTrainees = [
     email: "jane@company.com",
     avatar: "",
     mealPlans: ["Vegan Meal Plan"],
+    inviteAccepted: true,
+    inviteSentDate: new Date("2025-01-20"),
   },
   {
     id: "3",
@@ -28,18 +34,54 @@ const mockTrainees = [
     email: "bob@company.com",
     avatar: "",
     mealPlans: ["Low-Carb Diet", "Keto Plan"],
+    inviteAccepted: false,
+    inviteSentDate: new Date("2025-10-30"),
+  },
+  {
+    id: "4",
+    name: "Sarah Williams",
+    email: "sarah@company.com",
+    avatar: "",
+    mealPlans: [],
+    inviteAccepted: false,
+    inviteSentDate: new Date("2025-10-28"),
   },
 ];
 
 export default function TraineesManagement() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
+  const { toast } = useToast();
 
-  const filteredTrainees = mockTrainees.filter(
-    (emp) =>
-      emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      emp.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const isInviteExpired = (inviteSentDate: Date) => {
+    const daysSinceInvite = Math.floor((new Date().getTime() - inviteSentDate.getTime()) / (1000 * 60 * 60 * 24));
+    return daysSinceInvite > 7;
+  };
+
+  const handleResendInvite = (trainee: typeof mockTrainees[0]) => {
+    // Here you would call your API to resend the invite
+    console.log("Resending invite to:", { email: trainee.email, name: trainee.name });
+    toast({
+      title: "Invite Resent",
+      description: `Invitation email sent to ${trainee.name}`,
+    });
+  };
+
+  const sortedTrainees = [...mockTrainees].sort((a, b) => {
+    if (a.inviteAccepted === b.inviteAccepted) return 0;
+    return a.inviteAccepted ? -1 : 1;
+  });
+
+  const filteredTrainees = sortedTrainees.filter((trainee) => {
+    const matchesSearch =
+      trainee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      trainee.email.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (activeTab === "active") return matchesSearch && trainee.inviteAccepted;
+    if (activeTab === "inactive") return matchesSearch && !trainee.inviteAccepted;
+    return matchesSearch;
+  });
 
   const getInitials = (name: string) => {
     return name
@@ -84,52 +126,95 @@ export default function TraineesManagement() {
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6">
-        <div className="space-y-3">
-          {filteredTrainees.map((trainee) => (
-            <div
-              key={trainee.id}
-              className="bg-card border border-border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors"
-              style={{ boxShadow: "var(--shadow-card)" }}
-              onClick={() => navigate(`/trainer/trainees/${trainee.id}/progress`)}
-            >
-              <div className="flex items-start gap-3">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src={trainee.avatar} alt={trainee.name} />
-                  <AvatarFallback className="bg-primary/10 text-primary">
-                    {getInitials(trainee.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold">{trainee.name}</h3>
-                  <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
-                    <Mail className="h-3 w-3" />
-                    {trainee.email}
-                  </p>
-                  <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground">Assigned Meal Plans:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {trainee.mealPlans.length > 0 ? (
-                        trainee.mealPlans.map((plan, idx) => (
-                          <Badge
-                            key={idx}
-                            variant="secondary"
-                            className="text-xs bg-accent/20 text-accent-foreground"
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="active">Active</TabsTrigger>
+            <TabsTrigger value="inactive">Inactive</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value={activeTab} className="mt-0">
+            <div className="space-y-3">
+              {filteredTrainees.map((trainee) => (
+                <div
+                  key={trainee.id}
+                  className="bg-card border border-border rounded-lg p-4"
+                  style={{ boxShadow: "var(--shadow-card)" }}
+                >
+                  <div className="flex items-start gap-3">
+                    <Avatar 
+                      className="h-12 w-12 cursor-pointer" 
+                      onClick={() => navigate(`/trainer/trainees/${trainee.id}/progress`)}
+                    >
+                      <AvatarImage src={trainee.avatar} alt={trainee.name} />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {getInitials(trainee.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3 
+                          className="font-semibold cursor-pointer hover:text-primary"
+                          onClick={() => navigate(`/trainer/trainees/${trainee.id}/progress`)}
+                        >
+                          {trainee.name}
+                        </h3>
+                        <Badge variant={trainee.inviteAccepted ? "default" : "secondary"} className="text-xs">
+                          {trainee.inviteAccepted ? "Active" : "Pending"}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
+                        <Mail className="h-3 w-3" />
+                        {trainee.email}
+                      </p>
+                      
+                      {!trainee.inviteAccepted && (
+                        <div className="mb-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleResendInvite(trainee);
+                            }}
                           >
-                            {plan}
-                          </Badge>
-                        ))
-                      ) : (
-                        <span className="text-xs text-muted-foreground italic">
-                          No meal plans assigned
-                        </span>
+                            <RefreshCw className="h-3 w-3 mr-1" />
+                            Resend Invite
+                          </Button>
+                          {isInviteExpired(trainee.inviteSentDate) && (
+                            <span className="text-xs text-destructive ml-2">Expired</span>
+                          )}
+                        </div>
                       )}
+
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">Assigned Meal Plans:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {trainee.mealPlans.length > 0 ? (
+                            trainee.mealPlans.map((plan, idx) => (
+                              <Badge
+                                key={idx}
+                                variant="secondary"
+                                className="text-xs bg-accent/20 text-accent-foreground"
+                              >
+                                {plan}
+                              </Badge>
+                            ))
+                          ) : (
+                            <span className="text-xs text-muted-foreground italic">
+                              No meal plans assigned
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </TabsContent>
+        </Tabs>
       </main>
 
       <BottomNav userRole="trainer" />
