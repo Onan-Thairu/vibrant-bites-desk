@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, ChevronRight, Calendar } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ArrowLeft, ChevronRight, Calendar, UserMinus, Users } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const mockDays = [
   {
@@ -46,12 +49,53 @@ const mockDays = [
   },
 ];
 
+const mockAssignedTrainees = [
+  {
+    id: "1",
+    name: "John Smith",
+    email: "john.smith@example.com",
+    avatar: "",
+    progress: 75,
+    completedDays: 5,
+    totalDays: 7,
+  },
+  {
+    id: "2",
+    name: "Sarah Johnson",
+    email: "sarah.j@example.com",
+    avatar: "",
+    progress: 45,
+    completedDays: 3,
+    totalDays: 7,
+  },
+  {
+    id: "3",
+    name: "Michael Brown",
+    email: "m.brown@example.com",
+    avatar: "",
+    progress: 90,
+    completedDays: 6,
+    totalDays: 7,
+  },
+  {
+    id: "4",
+    name: "Emily Davis",
+    email: "emily.davis@example.com",
+    avatar: "",
+    progress: 30,
+    completedDays: 2,
+    totalDays: 7,
+  },
+];
+
 export default function MealPlanDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { toast } = useToast();
   const userRole = window.location.pathname.includes("trainer") ? "trainer" : "trainee";
   const [selectedDay, setSelectedDay] = useState(1);
   const [completedMeals, setCompletedMeals] = useState<Record<string, boolean>>({});
+  const [assignedTrainees, setAssignedTrainees] = useState(mockAssignedTrainees);
 
   const currentDayData = mockDays.find((d) => d.day === selectedDay) || mockDays[0];
 
@@ -68,6 +112,14 @@ export default function MealPlanDetails() {
   }, 0);
 
   const calorieProgress = (completedCalories / currentDayData.totalCalories) * 100;
+
+  const handleUnassign = (traineeId: string, traineeName: string) => {
+    setAssignedTrainees((prev) => prev.filter((t) => t.id !== traineeId));
+    toast({
+      title: "Trainee unassigned",
+      description: `${traineeName} has been unassigned from this meal plan.`,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -181,6 +233,69 @@ export default function MealPlanDetails() {
             );
           })}
         </section>
+
+        {/* Assigned Trainees Section - Only for Trainers */}
+        {userRole === "trainer" && (
+          <section className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold">Assigned Trainees</h3>
+              <Badge variant="secondary" className="ml-auto">
+                {assignedTrainees.length}
+              </Badge>
+            </div>
+
+            <div className="bg-card border border-border rounded-lg overflow-hidden" style={{ boxShadow: "var(--shadow-card)" }}>
+              <ScrollArea className="h-[300px]">
+                <div className="flex flex-col">
+                  {assignedTrainees.length > 0 ? (
+                    assignedTrainees.map((trainee) => (
+                      <div
+                        key={trainee.id}
+                        className="flex items-center gap-4 p-4 border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors"
+                      >
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={trainee.avatar} />
+                          <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                            {trainee.name.split(" ").map((n) => n[0]).join("")}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-sm truncate">{trainee.name}</h4>
+                          <p className="text-xs text-muted-foreground truncate">{trainee.email}</p>
+                          <div className="mt-2 space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Progress</span>
+                              <span className="font-medium text-primary">
+                                {trainee.completedDays}/{trainee.totalDays} days
+                              </span>
+                            </div>
+                            <Progress value={trainee.progress} className="h-1.5" />
+                          </div>
+                        </div>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleUnassign(trainee.id, trainee.name)}
+                        >
+                          <UserMinus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <Users className="h-12 w-12 text-muted-foreground/50 mb-3" />
+                      <p className="text-sm text-muted-foreground">No trainees assigned yet</p>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+          </section>
+        )}
       </main>
 
       <BottomNav userRole={userRole} />
