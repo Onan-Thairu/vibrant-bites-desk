@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, AlertCircle, Calendar, Mail } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Select,
   SelectContent,
@@ -19,6 +20,8 @@ const mockTrainee = {
   name: "John Doe",
   email: "john@example.com",
   avatar: "",
+  inviteAccepted: false, // Set to true to test accepted state
+  inviteSentDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
 };
 
 const mockMealPlans = [
@@ -48,6 +51,25 @@ export default function TraineeProgress() {
       .toUpperCase();
   };
 
+  const getExpirationDate = (inviteSentDate: Date) => {
+    const expirationDate = new Date(inviteSentDate);
+    expirationDate.setDate(expirationDate.getDate() + 7);
+    return expirationDate;
+  };
+
+  const isInviteExpired = (inviteSentDate: Date) => {
+    const expirationDate = getExpirationDate(inviteSentDate);
+    return new Date() > expirationDate;
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background pb-6">
       <header className="bg-card border-b border-border sticky top-0 z-40">
@@ -72,83 +94,130 @@ export default function TraineeProgress() {
                 <AvatarImage src={mockTrainee.avatar} alt={mockTrainee.name} />
                 <AvatarFallback>{getInitials(mockTrainee.name)}</AvatarFallback>
               </Avatar>
-              <div>
+              <div className="flex-1">
                 <h2 className="text-xl font-semibold">{mockTrainee.name}</h2>
                 <p className="text-sm text-muted-foreground">{mockTrainee.email}</p>
               </div>
+              <Badge variant={mockTrainee.inviteAccepted ? "default" : "secondary"}>
+                {mockTrainee.inviteAccepted ? "Active" : "Pending"}
+              </Badge>
             </div>
           </CardContent>
         </Card>
 
-        {/* Meal Plan Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Select Meal Plan</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Select value={selectedPlan} onValueChange={setSelectedPlan}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {mockMealPlans.map((plan) => (
-                  <SelectItem key={plan.id} value={plan.id}>
-                    {plan.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
+        {!mockTrainee.inviteAccepted ? (
+          <>
+            {/* Pending Invitation Alert */}
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>This trainee has not completed registration yet</AlertTitle>
+              <AlertDescription>
+                They need to accept the invitation before you can track their progress.
+              </AlertDescription>
+            </Alert>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 gap-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{mockProgress.currentStreak}</p>
-              <p className="text-xs text-muted-foreground">days</p>
-            </CardContent>
-          </Card>
+            {/* Invitation Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Invitation Status</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Invitation Sent</p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatDate(mockTrainee.inviteSentDate)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Expires On</p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatDate(getExpirationDate(mockTrainee.inviteSentDate))}
+                      {isInviteExpired(mockTrainee.inviteSentDate) && (
+                        <Badge variant="destructive" className="ml-2">Expired</Badge>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        ) : (
+          <>
+            {/* Meal Plan Selection */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Select Meal Plan</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Select value={selectedPlan} onValueChange={setSelectedPlan}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mockMealPlans.map((plan) => (
+                      <SelectItem key={plan.id} value={plan.id}>
+                        {plan.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">Meals Completed</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{mockProgress.totalMealsCompleted}</p>
-              <p className="text-xs text-muted-foreground">total</p>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Stats Overview */}
+            <div className="grid grid-cols-2 gap-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold">{mockProgress.currentStreak}</p>
+                  <p className="text-xs text-muted-foreground">days</p>
+                </CardContent>
+              </Card>
 
-        {/* Completion Stats */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Completion Percentage
-              <Badge variant="secondary">{mockProgress.completionPercentage}%</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Progress value={mockProgress.completionPercentage} className="h-3" />
-          </CardContent>
-        </Card>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium">Meals Completed</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold">{mockProgress.totalMealsCompleted}</p>
+                  <p className="text-xs text-muted-foreground">total</p>
+                </CardContent>
+              </Card>
+            </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Meal Plan Progress
-              <Badge variant="secondary">{mockProgress.completedMeals}/{mockProgress.totalMeals} meals</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Progress value={(mockProgress.completedMeals / mockProgress.totalMeals) * 100} className="h-3" />
-          </CardContent>
-        </Card>
+            {/* Completion Stats */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Completion Percentage
+                  <Badge variant="secondary">{mockProgress.completionPercentage}%</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Progress value={mockProgress.completionPercentage} className="h-3" />
+              </CardContent>
+            </Card>
 
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Meal Plan Progress
+                  <Badge variant="secondary">{mockProgress.completedMeals}/{mockProgress.totalMeals} meals</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Progress value={(mockProgress.completedMeals / mockProgress.totalMeals) * 100} className="h-3" />
+              </CardContent>
+            </Card>
+          </>
+        )}
       </main>
     </div>
   );
