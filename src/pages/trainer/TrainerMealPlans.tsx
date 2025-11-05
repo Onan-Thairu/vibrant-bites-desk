@@ -37,6 +37,34 @@ export default function TrainerMealPlans() {
       traineeCount: 8,
       image: mealPlan3,
     },
+    {
+      id: "4",
+      title: "Keto Diet Plan",
+      status: "active" as const,
+      traineeCount: 12,
+      image: mealPlan1,
+    },
+    {
+      id: "5",
+      title: "Vegan Nutrition Plan",
+      status: "active" as const,
+      traineeCount: 7,
+      image: mealPlan2,
+    },
+    {
+      id: "6",
+      title: "High Protein Plan",
+      status: "active" as const,
+      traineeCount: 15,
+      image: mealPlan3,
+    },
+    {
+      id: "7",
+      title: "Athletic Performance Plan",
+      status: "active" as const,
+      traineeCount: 6,
+      image: mealPlan1,
+    },
   ]);
 
   const handleDeleteClick = (planId: string) => {
