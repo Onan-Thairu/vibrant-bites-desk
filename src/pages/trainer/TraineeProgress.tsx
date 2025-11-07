@@ -20,7 +20,7 @@ const mockTrainee = {
   name: "John Doe",
   email: "john@example.com",
   avatar: "",
-  inviteAccepted: false, // Set to true to test accepted state
+  inviteAccepted: true, // Active trainee
   inviteSentDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
 };
 
