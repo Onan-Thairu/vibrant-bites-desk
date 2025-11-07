@@ -9,7 +9,6 @@ const currentPlan = {
   id: "1",
   title: "Summer Shred 2024",
   status: "active" as const,
-  traineeCount: 1,
   image: mealPlan1,
 };
 
@@ -17,13 +16,11 @@ const pastPlans = [
   {
     id: "2",
     title: "30-Day Fitness Challenge",
-    traineeCount: 1,
     image: mealPlan2,
   },
   {
     id: "3",
     title: "Quick Start Diet",
-    traineeCount: 1,
     image: mealPlan3,
   },
 ];
