@@ -13,7 +13,6 @@ import { useToast } from "@/hooks/use-toast";
 const mockDays = [
   {
     day: 1,
-    date: "Mon, Jan 15",
     meals: [
       { name: "Breakfast", time: "7:00 AM", calories: 350 },
       { name: "Snack", time: "10:00 AM", calories: 150 },
@@ -25,7 +24,6 @@ const mockDays = [
   },
   {
     day: 2,
-    date: "Tue, Jan 16",
     meals: [
       { name: "Breakfast", time: "7:00 AM", calories: 400 },
       { name: "Snack", time: "10:00 AM", calories: 120 },
@@ -37,7 +35,6 @@ const mockDays = [
   },
   {
     day: 3,
-    date: "Wed, Jan 17",
     meals: [
       { name: "Breakfast", time: "7:00 AM", calories: 380 },
       { name: "Snack", time: "10:00 AM", calories: 140 },
@@ -161,7 +158,6 @@ export default function MealPlanDetails() {
                 }`}
               >
                 <div className="text-sm font-medium">Day {day.day}</div>
-                <div className="text-xs opacity-80">{day.date}</div>
               </button>
             ))}
           </div>
