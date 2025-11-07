@@ -10,7 +10,9 @@ interface MealPlanCardProps {
   traineeCount?: number;
   image: string;
   onClick?: () => void;
+  onStartPlan?: () => void;
   variant?: "default" | "compact";
+  showStartButton?: boolean;
 }
 
 export function MealPlanCard({
@@ -19,7 +21,9 @@ export function MealPlanCard({
   traineeCount = 0,
   image,
   onClick,
+  onStartPlan,
   variant = "default",
+  showStartButton = false,
 }: MealPlanCardProps) {
   return (
     <Card 
@@ -48,16 +52,24 @@ export function MealPlanCard({
                   Active
                 </Badge>
               )}
-              <span className="text-sm text-muted-foreground">
-                {traineeCount} {traineeCount === 1 ? 'trainee' : 'trainees'}
-              </span>
+              {traineeCount > 0 && (
+                <span className="text-sm text-muted-foreground">
+                  {traineeCount} {traineeCount === 1 ? 'trainee' : 'trainees'}
+                </span>
+              )}
             </div>
             <div>
               <h3 className="font-semibold text-lg mb-1">{title}</h3>
             </div>
-            <Button onClick={onClick} variant="outline" className="w-full">
-              View
-            </Button>
+            {showStartButton ? (
+              <Button onClick={onStartPlan} className="w-full">
+                Start Meal Plan
+              </Button>
+            ) : (
+              <Button onClick={onClick} variant="outline" className="w-full">
+                View
+              </Button>
+            )}
           </div>
         </>
       ) : (

@@ -10,6 +10,7 @@ const currentPlan = {
   title: "Summer Shred 2024",
   status: "active" as const,
   image: mealPlan1,
+  started: true,
 };
 
 const pastPlans = [
@@ -17,16 +18,24 @@ const pastPlans = [
     id: "2",
     title: "30-Day Fitness Challenge",
     image: mealPlan2,
+    started: false,
   },
   {
     id: "3",
     title: "Quick Start Diet",
     image: mealPlan3,
+    started: false,
   },
 ];
 
 export default function TraineePlans() {
   const navigate = useNavigate();
+
+  const handleStartPlan = (planId: string) => {
+    console.log("Starting plan:", planId);
+    // TODO: Add logic to start the meal plan
+  };
+
 
   return (
     <div className="min-h-screen bg-background pb-24 lg:pb-0">
@@ -43,6 +52,8 @@ export default function TraineePlans() {
           <MealPlanCard
             {...currentPlan}
             onClick={() => navigate(`/trainee/plans/${currentPlan.id}`)}
+            showStartButton={!currentPlan.started}
+            onStartPlan={() => handleStartPlan(currentPlan.id)}
           />
         </section>
 
@@ -55,6 +66,8 @@ export default function TraineePlans() {
                 key={plan.id}
                 {...plan}
                 onClick={() => navigate(`/trainee/plans/${plan.id}`)}
+                showStartButton={!plan.started}
+                onStartPlan={() => handleStartPlan(plan.id)}
               />
             ))}
           </div>
