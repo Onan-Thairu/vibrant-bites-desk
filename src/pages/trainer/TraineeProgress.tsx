@@ -15,14 +15,44 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const mockTrainee = {
-  id: "1",
-  name: "John Doe",
-  email: "john@example.com",
-  avatar: "",
-  inviteAccepted: true, // Active trainee
-  inviteSentDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-};
+const mockTrainees = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john@company.com",
+    avatar: "",
+    mealPlans: ["High-Protein Diet", "Muscle Gain Plan"],
+    inviteAccepted: true,
+    inviteSentDate: new Date("2025-01-15"),
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    email: "jane@company.com",
+    avatar: "",
+    mealPlans: ["Vegan Meal Plan"],
+    inviteAccepted: true,
+    inviteSentDate: new Date("2025-01-20"),
+  },
+  {
+    id: "3",
+    name: "Bob Johnson",
+    email: "bob@company.com",
+    avatar: "",
+    mealPlans: ["Low-Carb Diet", "Keto Plan"],
+    inviteAccepted: false,
+    inviteSentDate: new Date("2025-10-30"),
+  },
+  {
+    id: "4",
+    name: "Sarah Williams",
+    email: "sarah@company.com",
+    avatar: "",
+    mealPlans: [],
+    inviteAccepted: false,
+    inviteSentDate: new Date("2025-10-28"),
+  },
+];
 
 const mockMealPlans = [
   { id: "1", name: "7-Day Weight Loss Plan" },
@@ -42,6 +72,9 @@ export default function TraineeProgress() {
   const navigate = useNavigate();
   const { traineeId } = useParams();
   const [selectedPlan, setSelectedPlan] = useState(mockMealPlans[0].id);
+
+  // Find the trainee based on the traineeId from URL
+  const trainee = mockTrainees.find((t) => t.id === traineeId) || mockTrainees[0];
 
   const getInitials = (name: string) => {
     return name
@@ -91,21 +124,21 @@ export default function TraineeProgress() {
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
-                <AvatarImage src={mockTrainee.avatar} alt={mockTrainee.name} />
-                <AvatarFallback>{getInitials(mockTrainee.name)}</AvatarFallback>
+                <AvatarImage src={trainee.avatar} alt={trainee.name} />
+                <AvatarFallback>{getInitials(trainee.name)}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <h2 className="text-xl font-semibold">{mockTrainee.name}</h2>
-                <p className="text-sm text-muted-foreground">{mockTrainee.email}</p>
+                <h2 className="text-xl font-semibold">{trainee.name}</h2>
+                <p className="text-sm text-muted-foreground">{trainee.email}</p>
               </div>
-              <Badge variant={mockTrainee.inviteAccepted ? "default" : "secondary"}>
-                {mockTrainee.inviteAccepted ? "Active" : "Pending"}
+              <Badge variant={trainee.inviteAccepted ? "default" : "secondary"}>
+                {trainee.inviteAccepted ? "Active" : "Pending"}
               </Badge>
             </div>
           </CardContent>
         </Card>
 
-        {!mockTrainee.inviteAccepted ? (
+        {!trainee.inviteAccepted ? (
           <>
             {/* Pending Invitation Alert */}
             <Alert>
@@ -127,7 +160,7 @@ export default function TraineeProgress() {
                   <div>
                     <p className="text-sm font-medium">Invitation Sent</p>
                     <p className="text-sm text-muted-foreground">
-                      {formatDate(mockTrainee.inviteSentDate)}
+                      {formatDate(trainee.inviteSentDate)}
                     </p>
                   </div>
                 </div>
@@ -136,8 +169,8 @@ export default function TraineeProgress() {
                   <div>
                     <p className="text-sm font-medium">Expires On</p>
                     <p className="text-sm text-muted-foreground">
-                      {formatDate(getExpirationDate(mockTrainee.inviteSentDate))}
-                      {isInviteExpired(mockTrainee.inviteSentDate) && (
+                      {formatDate(getExpirationDate(trainee.inviteSentDate))}
+                      {isInviteExpired(trainee.inviteSentDate) && (
                         <Badge variant="destructive" className="ml-2">Expired</Badge>
                       )}
                     </p>
