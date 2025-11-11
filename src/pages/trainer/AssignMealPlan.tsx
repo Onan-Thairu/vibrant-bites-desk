@@ -5,15 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { BottomNav } from "@/components/BottomNav";
 import { toast } from "sonner";
 
 const mockTrainees = [
-  { id: "1", name: "John Doe", email: "john@company.com" },
-  { id: "2", name: "Jane Smith", email: "jane@company.com" },
-  { id: "3", name: "Bob Johnson", email: "bob@company.com" },
-  { id: "4", name: "Alice Williams", email: "alice@company.com" },
-  { id: "5", name: "Charlie Brown", email: "charlie@company.com" },
+  { id: "1", name: "John Doe", email: "john@company.com", inviteAccepted: true, hasMealPlan: false },
+  { id: "2", name: "Jane Smith", email: "jane@company.com", inviteAccepted: true, hasMealPlan: true },
+  { id: "3", name: "Bob Johnson", email: "bob@company.com", inviteAccepted: false, hasMealPlan: false },
+  { id: "4", name: "Alice Williams", email: "alice@company.com", inviteAccepted: true, hasMealPlan: false },
+  { id: "5", name: "Charlie Brown", email: "charlie@company.com", inviteAccepted: false, hasMealPlan: false },
 ];
 
 export default function AssignMealPlan() {
@@ -77,17 +78,29 @@ export default function AssignMealPlan() {
                 key={trainee.id}
                 className="flex items-center gap-3 p-3 border border-border rounded-lg"
               >
-                <Checkbox
-                  id={`trainee-${trainee.id}`}
-                  checked={selectedTrainees.includes(trainee.id)}
-                  onCheckedChange={() => toggleTrainee(trainee.id)}
-                />
+                {!trainee.hasMealPlan && (
+                  <Checkbox
+                    id={`trainee-${trainee.id}`}
+                    checked={selectedTrainees.includes(trainee.id)}
+                    onCheckedChange={() => toggleTrainee(trainee.id)}
+                  />
+                )}
                 <Label
                   htmlFor={`trainee-${trainee.id}`}
-                  className="flex-1 cursor-pointer"
+                  className={`flex-1 ${trainee.hasMealPlan ? '' : 'cursor-pointer'} ${trainee.hasMealPlan ? 'ml-6' : ''}`}
                 >
-                  <div className="font-medium">{trainee.name}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{trainee.name}</span>
+                    {trainee.inviteAccepted ? (
+                      <Badge variant="default" className="text-xs">Active</Badge>
+                    ) : (
+                      <Badge variant="secondary" className="text-xs">Pending Invite</Badge>
+                    )}
+                  </div>
                   <div className="text-sm text-muted-foreground">{trainee.email}</div>
+                  {trainee.hasMealPlan && (
+                    <div className="text-xs text-muted-foreground mt-1">Already assigned a meal plan</div>
+                  )}
                 </Label>
               </div>
             ))}
