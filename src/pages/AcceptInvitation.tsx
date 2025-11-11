@@ -19,18 +19,27 @@ const AcceptInvitation = () => {
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isTokenExpired, setIsTokenExpired] = useState(false);
+
+  // Mock token validation - check if token is expired
+  useState(() => {
+    if (token) {
+      // Simulate token expiration check
+      // In a real app, decode the token and check expiration timestamp
+      const isExpired = token.includes("expired");
+      setIsTokenExpired(isExpired);
+    }
+  });
+
+  const handleRequestReinvitation = () => {
+    toast({
+      title: "Re-invitation Requested",
+      description: "Your trainer has been notified to send you a new invitation link.",
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!token) {
-      toast({
-        title: "Invalid Invitation",
-        description: "The invitation link is invalid or expired.",
-        variant: "destructive",
-      });
-      return;
-    }
 
     if (formData.password !== formData.confirmPassword) {
       toast({
@@ -53,32 +62,27 @@ const AcceptInvitation = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/v1/invitations/accept", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          password: formData.password,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to accept invitation");
-      }
+      // Mock: Store user credentials in localStorage
+      const userCredentials = {
+        email: `trainee_${token}@mealter.app`,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        password: formData.password,
+        role: "trainee",
+      };
+      
+      localStorage.setItem("userCredentials", JSON.stringify(userCredentials));
+      localStorage.setItem("currentUser", JSON.stringify(userCredentials));
 
       toast({
         title: "Account Created!",
-        description: "Your account has been created successfully. Please log in.",
+        description: "Your account has been created successfully. Redirecting to your dashboard...",
       });
 
-      // Redirect to login page after 2 seconds
+      // Redirect to trainee dashboard
       setTimeout(() => {
-        navigate("/auth");
-      }, 2000);
+        navigate("/trainee/dashboard");
+      }, 1500);
     } catch (error) {
       toast({
         title: "Error",
@@ -97,11 +101,34 @@ const AcceptInvitation = () => {
           <CardHeader>
             <CardTitle>Invalid Invitation</CardTitle>
             <CardDescription>
-              This invitation link is invalid or has expired. Please contact your trainer for a new invitation.
+              This invitation link is invalid. Please contact your trainer for a new invitation.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={() => navigate("/")} className="w-full">
+              Go to Home
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isTokenExpired) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Invitation Expired</CardTitle>
+            <CardDescription>
+              This invitation link has expired. Click below to request a new invitation from your trainer.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button onClick={handleRequestReinvitation} className="w-full">
+              Request New Invitation
+            </Button>
+            <Button onClick={() => navigate("/")} variant="outline" className="w-full">
               Go to Home
             </Button>
           </CardContent>
