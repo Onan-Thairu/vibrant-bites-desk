@@ -73,37 +73,42 @@ export default function AssignMealPlan() {
           </div>
 
           <div className="space-y-3 max-h-96 overflow-y-auto">
-            {filteredTrainees.map((trainee) => (
-              <div
-                key={trainee.id}
-                className="flex items-center gap-3 p-3 border border-border rounded-lg"
-              >
-                {!trainee.hasMealPlan && (
-                  <Checkbox
-                    id={`trainee-${trainee.id}`}
-                    checked={selectedTrainees.includes(trainee.id)}
-                    onCheckedChange={() => toggleTrainee(trainee.id)}
-                  />
-                )}
-                <Label
-                  htmlFor={`trainee-${trainee.id}`}
-                  className={`flex-1 ${trainee.hasMealPlan ? '' : 'cursor-pointer'} ${trainee.hasMealPlan ? 'ml-6' : ''}`}
+            {filteredTrainees.map((trainee) => {
+              const canBeSelected = !trainee.inviteAccepted && !trainee.hasMealPlan;
+              
+              return (
+                <div
+                  key={trainee.id}
+                  className="flex items-center gap-3 p-3 border border-border rounded-lg"
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{trainee.name}</span>
-                    {trainee.inviteAccepted ? (
-                      <Badge variant="default" className="text-xs">Active</Badge>
-                    ) : (
-                      <Badge variant="secondary" className="text-xs">Pending Invite</Badge>
+                  {canBeSelected && (
+                    <Checkbox
+                      id={`trainee-${trainee.id}`}
+                      checked={selectedTrainees.includes(trainee.id)}
+                      onCheckedChange={() => toggleTrainee(trainee.id)}
+                    />
+                  )}
+                  <div
+                    className={`flex-1 ${canBeSelected ? '' : 'ml-6'}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{trainee.name}</span>
+                      {trainee.inviteAccepted ? (
+                        <Badge variant="default" className="text-xs">Active</Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-xs">Pending Invite</Badge>
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{trainee.email}</div>
+                    {(trainee.inviteAccepted || trainee.hasMealPlan) && (
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {trainee.hasMealPlan ? 'Already assigned a meal plan' : 'Cannot assign until invite is accepted'}
+                      </div>
                     )}
                   </div>
-                  <div className="text-sm text-muted-foreground">{trainee.email}</div>
-                  {trainee.hasMealPlan && (
-                    <div className="text-xs text-muted-foreground mt-1">Already assigned a meal plan</div>
-                  )}
-                </Label>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
 
           {selectedTrainees.length > 0 && (
