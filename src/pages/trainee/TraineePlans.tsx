@@ -52,7 +52,6 @@ export default function TraineePlans() {
           <MealPlanCard
             {...currentPlan}
             onClick={() => navigate(`/trainee/plans/${currentPlan.id}`)}
-            showStartButton={!currentPlan.started}
             onStartPlan={() => handleStartPlan(currentPlan.id)}
           />
         </section>
@@ -66,7 +65,6 @@ export default function TraineePlans() {
                 key={plan.id}
                 {...plan}
                 onClick={() => navigate(`/trainee/plans/${plan.id}`)}
-                showStartButton={!plan.started}
                 onStartPlan={() => handleStartPlan(plan.id)}
               />
             ))}
