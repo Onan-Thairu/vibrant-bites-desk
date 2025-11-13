@@ -13,6 +13,7 @@ interface MealPlanCardProps {
   onStartPlan?: () => void;
   variant?: "default" | "compact";
   started?: boolean;
+  showStartButton?: boolean;
 }
 
 export function MealPlanCard({
@@ -24,6 +25,7 @@ export function MealPlanCard({
   onStartPlan,
   variant = "default",
   started = false,
+  showStartButton = true,
 }: MealPlanCardProps) {
   return (
     <Card 
@@ -65,14 +67,16 @@ export function MealPlanCard({
               <Button onClick={onClick} variant="outline" className="w-full">
                 View
               </Button>
-              <Button 
-                onClick={onStartPlan} 
-                className="w-full"
-                disabled={started}
-                style={{ cursor: started ? 'not-allowed' : 'pointer' }}
-              >
-                Start Meal Plan
-              </Button>
+              {showStartButton && (
+                <Button 
+                  onClick={onStartPlan} 
+                  className="w-full"
+                  disabled={started}
+                  style={{ cursor: started ? 'not-allowed' : 'pointer' }}
+                >
+                  Start Meal Plan
+                </Button>
+              )}
             </div>
           </div>
         </>

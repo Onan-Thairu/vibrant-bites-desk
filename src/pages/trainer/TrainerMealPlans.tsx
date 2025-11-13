@@ -103,6 +103,7 @@ export default function TrainerMealPlans() {
                     <MealPlanCard
                       {...plan}
                       onClick={() => navigate(`/trainer/plans/${plan.id}`)}
+                      showStartButton={false}
                     />
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                       <Button
