@@ -70,7 +70,7 @@ export function AppSidebar({ userRole }: AppSidebarProps) {
       <SidebarFooter>
         <Button
           variant="ghost"
-          className="w-full justify-start"
+          className="w-full justify-start text-destructive hover:text-white hover:bg-destructive"
           onClick={handleLogout}
         >
           <LogOut className="h-5 w-5 mr-2" />

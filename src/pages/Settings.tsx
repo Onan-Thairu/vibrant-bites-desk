@@ -103,11 +103,6 @@ export default function Settings() {
           <Button onClick={handleSave} className="w-full bg-accent hover:bg-accent/90">
             Save Changes
           </Button>
-          
-          <Button variant="outline" className="w-full justify-start text-destructive hover:text-destructive">
-            <LogOut className="h-4 w-4 mr-2" />
-            Log Out
-          </Button>
         </div>
       </main>
 
