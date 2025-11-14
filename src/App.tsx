@@ -26,6 +26,7 @@ import ChangePassword from "./pages/ChangePassword";
 import AcceptInvitation from "./pages/AcceptInvitation";
 import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
+import EmptyMealPlans from "./pages/EmptyMealPlans";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ const App = () => {
               <Route path="/change-password" element={<ChangePassword />} />
               <Route path="/accept-invitation" element={<AcceptInvitation />} />
               <Route path="/unauthorized" element={<Unauthorized />} />
+              <Route path="/empty-meal-plans" element={<EmptyMealPlans />} />
               <Route path="/404" element={<NotFound />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
