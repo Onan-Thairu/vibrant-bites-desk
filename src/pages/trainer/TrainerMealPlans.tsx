@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import mealPlan1 from "@/assets/meal-plan-1.jpg";
 import mealPlan2 from "@/assets/meal-plan-2.jpg";
 import mealPlan3 from "@/assets/meal-plan-3.jpg";
+import emptyMealPlans from "@/assets/empty-meal-plans.jpg";
 
 export default function TrainerMealPlans() {
   const navigate = useNavigate();
@@ -145,9 +146,17 @@ export default function TrainerMealPlans() {
             <CarouselNext />
           </Carousel>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">No meal plans yet</p>
-            <Button onClick={() => navigate("/trainer/plans/create")}>
+          <div className="text-center py-12 max-w-md mx-auto">
+            <img 
+              src={emptyMealPlans} 
+              alt="No meal plans" 
+              className="w-full max-w-sm mx-auto mb-6 rounded-lg"
+            />
+            <h2 className="text-2xl font-bold mb-2">No Meal Plans Yet</h2>
+            <p className="text-muted-foreground mb-6">
+              Create your first meal plan to start helping your trainees achieve their nutrition goals
+            </p>
+            <Button onClick={() => navigate("/trainer/plans/create")} size="lg">
               <Plus className="h-4 w-4 mr-2" />
               Create Your First Plan
             </Button>
