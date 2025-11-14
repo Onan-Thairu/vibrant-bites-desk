@@ -25,6 +25,7 @@ import Settings from "./pages/Settings";
 import ChangePassword from "./pages/ChangePassword";
 import AcceptInvitation from "./pages/AcceptInvitation";
 import NotFound from "./pages/NotFound";
+import Unauthorized from "./pages/Unauthorized";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,7 @@ const App = () => {
               <Route path="/auth" element={<Auth />} />
               <Route path="/change-password" element={<ChangePassword />} />
               <Route path="/accept-invitation" element={<AcceptInvitation />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
               <Route path="/404" element={<NotFound />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
