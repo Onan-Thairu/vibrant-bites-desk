@@ -1,31 +1,65 @@
+import { useState } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { MobileHeader } from "@/components/MobileHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, TrendingUp, Target, Award } from "lucide-react";
 
-const progressStats = {
-  currentStreak: 5,
-  totalMealsCompleted: 42,
-  weeklyCompletion: 85,
-  monthlyGoal: 120,
-  completedThisMonth: 89,
-};
-
-const recentActivity = [
-  { date: "Today", meals: 3, calories: 1850, target: 2000 },
-  { date: "Yesterday", meals: 3, calories: 2100, target: 2000 },
-  { date: "2 days ago", meals: 2, calories: 1600, target: 2000 },
-  { date: "3 days ago", meals: 3, calories: 1950, target: 2000 },
+const mealPlans = [
+  { 
+    id: "1", 
+    name: "Weight Loss Plan",
+    stats: {
+      currentStreak: 5,
+      totalMealsCompleted: 42,
+      weeklyCompletion: 85,
+      monthlyGoal: 120,
+      completedThisMonth: 89,
+    }
+  },
+  { 
+    id: "2", 
+    name: "Muscle Gain Plan",
+    stats: {
+      currentStreak: 3,
+      totalMealsCompleted: 28,
+      weeklyCompletion: 72,
+      monthlyGoal: 100,
+      completedThisMonth: 56,
+    }
+  },
 ];
 
 export default function TraineeProgress() {
+  const [selectedPlanId, setSelectedPlanId] = useState(mealPlans[0].id);
+  const selectedPlan = mealPlans.find(plan => plan.id === selectedPlanId) || mealPlans[0];
+  const progressStats = selectedPlan.stats;
   return (
     <div className="min-h-screen bg-background pb-24 lg:pb-0">
       <MobileHeader title="My Progress" />
 
       <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+        {/* Meal Plan Selector */}
+        {mealPlans.length > 1 && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Select Meal Plan</label>
+            <Select value={selectedPlanId} onValueChange={setSelectedPlanId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a meal plan" />
+              </SelectTrigger>
+              <SelectContent>
+                {mealPlans.map((plan) => (
+                  <SelectItem key={plan.id} value={plan.id}>
+                    {plan.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
         {/* Stats Overview */}
         <div className="grid grid-cols-2 gap-4">
           <Card>
