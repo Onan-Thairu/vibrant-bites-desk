@@ -1,19 +1,51 @@
+import { useState } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, User, Mail, Bell, Lock, LogOut } from "lucide-react";
+import { ArrowLeft, User, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 export default function Settings() {
   const navigate = useNavigate();
   const userRole = window.location.pathname.includes("trainer") ? "trainer" : "trainee";
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSave = () => {
     toast.success("Settings saved successfully!");
+  };
+
+  const handleChangePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New passwords do not match");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (user.email) {
+      localStorage.removeItem(`temp_password_${user.email}`);
+    }
+
+    toast.success("Password changed successfully!");
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
   };
 
   return (
@@ -56,54 +88,64 @@ export default function Settings() {
               <Input id="specialization" defaultValue="Nutrition & Wellness" />
             </div>
           )}
+
+          <Button onClick={handleSave} className="w-full bg-accent hover:bg-accent/90 mt-4">
+            Save Changes
+          </Button>
         </Card>
 
-        {/* Notifications */}
-        <Card className="p-4 border-none space-y-4" style={{ boxShadow: "var(--shadow-card)" }}>
-          <div className="flex items-center gap-3 mb-2">
-            <Bell className="h-5 w-5 text-primary" />
-            <h2 className="font-semibold">Notifications</h2>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Push Notifications</p>
-              <p className="text-sm text-muted-foreground">Receive meal plan updates</p>
-            </div>
-            <Switch defaultChecked />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Email Notifications</p>
-              <p className="text-sm text-muted-foreground">Get weekly summaries</p>
-            </div>
-            <Switch defaultChecked />
-          </div>
-        </Card>
-
-        {/* Security */}
+        {/* Change Password */}
         <Card className="p-4 border-none space-y-4" style={{ boxShadow: "var(--shadow-card)" }}>
           <div className="flex items-center gap-3 mb-2">
             <Lock className="h-5 w-5 text-primary" />
-            <h2 className="font-semibold">Security</h2>
+            <h2 className="font-semibold">Change Password</h2>
           </div>
           
-          <Button 
-            variant="outline" 
-            className="w-full justify-start"
-            onClick={() => navigate("/change-password")}
-          >
-            Change Password
-          </Button>
-        </Card>
+          <form onSubmit={handleChangePassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="current-password">Current Password</Label>
+              <Input
+                id="current-password"
+                type="password"
+                placeholder="••••••••"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* Actions */}
-        <div className="space-y-3">
-          <Button onClick={handleSave} className="w-full bg-accent hover:bg-accent/90">
-            Save Changes
-          </Button>
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-password">New Password</Label>
+              <Input
+                id="new-password"
+                type="password"
+                placeholder="••••••••"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                Must be at least 8 characters
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm New Password</Label>
+              <Input
+                id="confirm-password"
+                type="password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <Button type="submit" className="w-full bg-accent hover:bg-accent/90">
+              Update Password
+            </Button>
+          </form>
+        </Card>
       </main>
 
       <BottomNav userRole={userRole} />
